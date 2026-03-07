@@ -43,5 +43,5 @@ class LoginPage:
             heading = self.get_environment_heading()
             return heading
         except Exception as e:
-            print(f"❌ Login failed with error: {e}")
+            print(f"Login failed with error: {e}")
             return None
