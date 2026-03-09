@@ -1,0 +1,8 @@
+.env
+__pycache__/
+.pytest_cache/
+*.png
+*.webp
+node_modules/
+.venv/
+venv/

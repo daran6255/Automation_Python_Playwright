@@ -10,7 +10,6 @@ class LoginPage:
         self.environment_button = page.locator("xpath=//app-environment//h3")
 
     def navigate(self, url):
-
         self.page.goto(url)
         self.page.wait_for_load_state('networkidle')
 
@@ -22,13 +21,7 @@ class LoginPage:
 
     def click_login(self):
         self.login_button.wait_for(state='visible', timeout=10000)
-        
-        try:
-            with self.page.expect_navigation(timeout=15000):
-                self.login_button.click()
-        except Exception as e:
-            print(f"❌ Login navigation failed: {e}")
-            print(f"Current URL: {self.page.url}")
+        self.login_button.click()
 
     def get_environment_heading(self):
         self.environment_button.wait_for(state='visible', timeout=10000)
@@ -40,8 +33,12 @@ class LoginPage:
             self.enter_username(username)
             self.enter_password(password)
             self.click_login()
+            
+            # Wait for dashboard URL to confirm navigation
+            self.page.wait_for_url(lambda url: "dashboard" in url, timeout=30000)
+            
             heading = self.get_environment_heading()
             return heading
         except Exception as e:
-            print(f"Login failed with error: {e}")
+            print(f"Login failed: {e}")
             return None

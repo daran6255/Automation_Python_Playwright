@@ -1,36 +1,18 @@
 import pytest
-from playwright.sync_api import sync_playwright
-import time
 from pages.login_page import LoginPage
+from config.config import BASE_URL, LOGIN_USERNAME, LOGIN_PASSWORD
 
 class TestLogin:
-    """Test class for login functionality"""
-    
-    @pytest.fixture
-    def browser_setup(self):
-        """Setup browser for each test"""
-        with sync_playwright() as p:
-            browser = p.chromium.launch(
-                headless=False,
-                args=[
-                    '--disable-blink-features=AutomationControlled',
-                    '--disable-web-resources',
-                ]
-            )
-            
-            context = browser.new_context(
-                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-            )
-            
-            page = context.new_page()
-            
-            # Hide automation detection
-            page.add_init_script("""
-                Object.defineProperty(navigator, 'webdriver', {
-                    get: () => false,
-                });
-            """)
-            
-            yield page, browser
-            
-            browser.close()
+    """Refined Test class for login functionality"""
+
+    def test_login_success(self, page_context):
+        """Test successful login using session context from conftest"""
+        login_page = LoginPage(page_context)
+        
+        print(f"DEBUG: Navigating to {BASE_URL}")
+        login_page.navigate(BASE_URL)
+        
+        result = login_page.login(LOGIN_USERNAME, LOGIN_PASSWORD)
+        
+        assert result is not None, "Login failed - check logs for Encryption/SubtleCrypto errors"
+        print(f"Login successful, environment heading: {result}")
